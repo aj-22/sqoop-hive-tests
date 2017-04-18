@@ -1,0 +1,86 @@
+MYSQL Section
+
+mysql> use ajindb;
+Database changed
+mysql> create table datawithcommas (id int, data varchar(50));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into datawithcommas values (1,"My string, dummy, 1213");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into datawithcommas values (2,"Mafdssd string, dummy, 1213");
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into datawithcommas values (3,"Mafdssd string, dummy, 121343*&^(&^%$&");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from datawithcommas;
++----+----------------------------------------+
+| id | data                                   |
++----+----------------------------------------+
+|  1 | My string, dummy, 1213                 |
+|  2 | Mafdssd string, dummy, 1213            |
+|  3 | Mafdssd string, dummy, 121343*&^(&^%$& |
++----+----------------------------------------+
+
+SQOOPING DATA and VERIFYING IN HIVE/HDFS
+
+sqoop import --connect jdbc:mysql://quickstart.cloudera:3306/ajindb \
+--username root --password cloudera --table datawithcommas \
+--target-dir /user/cloudera/hive/ajindb/datawithcommas00 -m 1
+
+
+
+sqoop import --connect jdbc:mysql://quickstart.cloudera:3306/ajindb \
+--username root --password cloudera --table datawithcommas \
+--hive-import --hive-table ajindb.datawithcommas01 -m 1
+
+    //Works fine. Hive import--
+    datawithcommas01.id	  datawithcommas01.data
+    1	                    My string, dummy, 1213
+    2	                    Mafdssd string, dummy, 1213
+    3	                    Mafdssd string, dummy, 121343*&^(&^%$&
+    
+sqoop import --connect jdbc:mysql://quickstart.cloudera:3306/ajindb \
+--username root --password cloudera --table datawithcommas \
+--target-dir /user/cloudera/hive/ajindb/datawithcommas02 -m 1
+
+    //Data Loaded can create problems while importing into Hive
+    [cloudera@quickstart ~]$ hdfs dfs -cat /user/cloudera/hive/ajindb/datawithcommas02/*
+    1,My string, dummy, 1213
+    2,Mafdssd string, dummy, 1213
+    3,Mafdssd string, dummy, 121343*&^(&^%$&
+
+sqoop import --connect jdbc:mysql://quickstart.cloudera:3306/ajindb \
+--username root --password cloudera --table datawithcommas \
+--target-dir /user/cloudera/hive/ajindb/datawithcommas03 \
+--fields-terminated-by "," --optionally-enclosed-by "\"" -m 1
+  
+    //Data loaded is fine. Can be imported into hive using SerDe
+    [cloudera@quickstart ~]$ hdfs dfs -cat /user/cloudera/hive/ajindb/datawithcommas03/*
+    1,"My string, dummy, 1213"
+    2,"Mafdssd string, dummy, 1213"
+    3,"Mafdssd string, dummy, 121343*&^(&^%$&"
+
+sqoop import --connect jdbc:mysql://quickstart.cloudera:3306/ajindb \
+--username root --password cloudera --table datawithcommas \
+--target-dir /user/cloudera/hive/ajindb/datawithcommas04 \
+--fields-terminated-by "," --optionally-enclosed-by "\"" \
+--hive-import --hive-table ajindb.datawithcommas04 -m 1
+
+    //Data loaded in hive as follows
+    datawithcommas04.id	    datawithcommas04.data
+    1	                      "My string
+    2	                      "Mafdssd string
+    3	                      "Mafdssd string
+
+sqoop import --connect jdbc:mysql://quickstart.cloudera:3306/ajindb \
+--username root --password cloudera --table datawithcommas \
+--fields-terminated-by "," --optionally-enclosed-by "\"" \
+--hive-import --hive-table ajindb.datawithcommas05 -m 1
+
+    //Data loaded in hive as follows
+    datawithcommas04.id	    datawithcommas04.data
+    1	                      "My string
+    2	                      "Mafdssd string
+    3	                      "Mafdssd string
