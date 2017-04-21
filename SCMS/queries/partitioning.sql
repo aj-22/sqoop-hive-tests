@@ -1,8 +1,8 @@
 set hive.exec.dynamic.partition.mode=nonstrict;
 set hive.exec.dynamic.partition=true;
 set hive.enforce.bucketing=true;
-SET hive.exec.max.dynamic.partitions=2048; //default=1000
-SET hive.exec.max.dynamic.partitions.pernode=1024; //default=100
+SET hive.exec.max.dynamic.partitions=2048; --default=1000
+SET hive.exec.max.dynamic.partitions.pernode=1024; --default=100
 
 
 CREATE TABLE delivery_parti(
