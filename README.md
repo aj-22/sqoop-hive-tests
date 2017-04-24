@@ -6,8 +6,11 @@ This repository includes queries and commands I attempted in Cloudera Quickstart
 Mostly in Hive and Sqoop.
 
 
-For HIVE we have following things here-
+For HIVE we have-
   1. Supply chain dataset
   2. Dynamic partitioning
   3. Static Partitioning
+  
+For SQOOP we have-
+  1. Importing data with commas into HIVE from MYSQL
   
