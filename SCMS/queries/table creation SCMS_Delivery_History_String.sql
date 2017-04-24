@@ -63,7 +63,7 @@ load data local inpath
 into table scms_delivery_history;
 
 --Lets create a view to cast the the string fields into appropriate datatypes
-CREATE VIEW `ajindb.delivery_cast` as SELECT
+CREATE VIEW `scms.delivery_cast` as SELECT
  CAST(`ID` as INT) as `ID` ,`Project_Code` ,`PQ` ,`PO_or_SO` ,
   `ASNorDN` ,`Country` ,`Managed_By` ,`Fulfill_Via` ,
   `Vendor_INCO_Term` ,`Shipment_Mode` ,`PQ_First_Sent_to_Client_Date` ,
@@ -74,10 +74,10 @@ CREATE VIEW `ajindb.delivery_cast` as SELECT
   `Dosage` ,`Dosage_Form` ,
   CAST(`Unit_of_Measure_Per_Pack` AS INT) AS `Unit_of_Measure_Per_Pack` ,
   CAST(`Line_Item_Quantity` AS INT) as `Line_Item_Quantity`,
-  CAST(`Line_Item_Value` AS DOUBLE) AS `Line_Item_Value`,
-  CAST(`Pack_Price` AS DOUBLE) AS `Pack_Price`,
-  CAST(`Unit_Price` AS DOUBLE) AS `Unit_Price` ,
+  CAST(`Line_Item_Value` AS DECIMAL(10,4)) AS `Line_Item_Value`,
+  CAST(`Pack_Price` AS DECIMAL(10,4)) AS `Pack_Price`,
+  CAST(`Unit_Price` AS DECIMAL(10,4)) AS `Unit_Price` ,
    `Manufacturing_Site` ,`First_Line_Designation` ,
   `Weight_Kilograms` ,`Freight_Cost_USD` ,
-  CAST(`Line_Item_Insurance_USD` AS DOUBLE) AS `Line_Item_Insurance_USD`
+  CAST(`Line_Item_Insurance_USD` AS DECIMAL(10,4)) AS `Line_Item_Insurance_USD`
   FROM delivery_serde;
