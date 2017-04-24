@@ -4,12 +4,10 @@
 # Create table partitioned by country is a pre-requisite
 # Values can be included via arguments 
 
-
 partitionlist="./list.txt"
 rawtable="scms.delivery_delim"
 partable="scms.delivery_parti_static"
 parcolumn="country"
-
 
 while read -r line
 do
